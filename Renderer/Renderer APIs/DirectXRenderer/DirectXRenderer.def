@@ -1,0 +1,9 @@
+; file DirectXRenderer.def
+; DLL export the following fucntions
+
+LIBRARY "DirectXRenderer.dll"
+EXPORTS 
+	CreateRenderDevice
+	ShutdownRenderDevice
+	
+;end of file

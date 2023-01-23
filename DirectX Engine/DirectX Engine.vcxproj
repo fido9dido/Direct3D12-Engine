@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{8E64F6FB-B714-44C0-BC7F-E1BFF6063097}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SerpopardEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>DX Engine</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <AdditionalIncludeDirectories>;$(SolutionDir)DirectX Engine\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Renderer.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Shared_Header_Files;$(ProjectDir)Renderer\Header Files;$(ProjectDir)\Header Files;$(ProjectDir)Resource Files;$(SolutionDir)Third_Parties\DirectXTK12\Inc;$(SolutionDir)Third_Parties\PhysX\include;$(SolutionDir)Third_Parties\PhysX\pxshared\include;$(SolutionDir)Common\Header_Files;$(SolutionDir)Renderer\Header Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Renderer.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysX_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysXCooking_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysXFoundation_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysXCommon_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysXExtensions_static_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\PhysXPvdSDK_static_64.lib;$(SolutionDir)$(Platform)\$(Configuration)\Common.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/VERBOSE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>;$(SolutionDir)DirectX Engine\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Renderer.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Third Parties\PhysX\pxshared\include;$(SolutionDir)Third Parties\PhysX\physx\source\foundation\include;$(SolutionDir)DirectX Engine\include;;$(SolutionDir)DirectX Engine\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Renderer.lib;User32.lib;Gdi32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source Files\Camera.cpp" />
+    <ClCompile Include="Source Files\CFreeMode.cpp" />
+    <ClCompile Include="Source Files\CPhysicsSimulation.cpp" />
+    <ClCompile Include="Source Files\DXIMouse.cpp" />
+    <ClCompile Include="Source Files\DXIMouseEvent.cpp" />
+    <ClCompile Include="Source Files\Exception.cpp" />
+    <ClCompile Include="Source Files\FirstPersonMode.cpp" />
+    <ClCompile Include="Source Files\MainApp.cpp" />
+    <ClCompile Include="Source Files\MovementController.cpp" />
+    <ClCompile Include="Source Files\CTimer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Shared_Header_Files\CustomReturnValues.h" />
+    <ClInclude Include="..\Shared_Header_Files\IEngineObject.h" />
+    <ClInclude Include="Header Files\BaseWindow.h" />
+    <ClInclude Include="Header Files\Camera.h" />
+    <ClInclude Include="Header Files\CFreeMode.h" />
+    <ClInclude Include="Header Files\CPhysicsSimulation.h" />
+    <ClInclude Include="Header Files\CUtility.h" />
+    <ClInclude Include="Header Files\DXIMouse.h" />
+    <ClInclude Include="Header Files\DXIMouseEvent.h" />
+    <ClInclude Include="Header Files\Exception.h" />
+    <ClInclude Include="Header Files\FirstPersonMode.h" />
+    <ClInclude Include="Header Files\IGUIObject.h" />
+    <ClInclude Include="Header Files\MainApp.h" />
+    <ClInclude Include="Header Files\MovementController.h" />
+    <ClInclude Include="Header Files\CTimer.h" />
+    <ClInclude Include="Resource Files\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{46134651-d22b-47f7-8ca0-562d87def0f9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Renderer\Renderer APIs\DirectXRenderer\DirectXRenderer.vcxproj">
+      <Project>{accfd94e-946a-40bf-9572-20588102b0ef}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Renderer\Renderer.vcxproj">
+      <Project>{cb5d135b-a195-4e43-9904-0b25b0ad5281}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\FastXml.vcxproj">
+      <Project>{359190ff-fbed-31d1-a115-bc6dcedddb3f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\LowLevel.vcxproj">
+      <Project>{f46e7679-a38d-3fe2-bed4-21b089bf2e5d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\LowLevelAABB.vcxproj">
+      <Project>{3d143364-3933-31d3-a72a-808b5c7cf583}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\LowLevelDynamics.vcxproj">
+      <Project>{9ac58a1b-1836-3388-aade-3ff72c42e8af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysX.vcxproj">
+      <Project>{ad9393df-92de-320f-9b84-0afb274616af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXCommon.vcxproj">
+      <Project>{aa0c494d-5312-3929-9114-c8de7329ec21}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXCooking.vcxproj">
+      <Project>{4e8301e4-08b2-33ae-a526-610ce9e61b07}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXExtensions.vcxproj">
+      <Project>{d30063a1-15ab-30bf-abb6-93a2154a7e61}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXFoundation.vcxproj">
+      <Project>{5d9df60e-a237-3d70-88b4-6a440f0f4eaa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXPvdSDK.vcxproj">
+      <Project>{f7cabf15-f6d4-3547-9f12-1d2e8ac9a666}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third_Parties\PhysX\compiler\vc17win64\sdk_source_bin\PhysXTask.vcxproj">
+      <Project>{fb587710-1855-3264-ae4a-bbff15a528b7}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource Files\Resource.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,16 +1,16 @@
-#include "SubstanceManager.h"
+#include "CSubstanceManager.h"
 #include <CustomReturnValues.h>
 #include <DDSTextureLoader.h>
 #include <WICTextureLoader.h>
 #include "Utility.h"
 #include <d3dx12.h>
 
-SubstanceManager::SubstanceManager(ID3D12Device* pDevice, FILE* pLog)
+CSubstanceManager::CSubstanceManager(ID3D12Device* pDevice, FILE* pLog)
 	:DeviceRef(pDevice)
 {
 }
 
-HRESULT SubstanceManager::AddSubstance(const std::wstring& name, unique_ptr<Material>& mat)
+HRESULT CSubstanceManager::AddSubstance(const std::wstring& name, unique_ptr<Material>& mat)
 {
 	bool bMatExists = false;
 	std::uint32_t index;
@@ -48,13 +48,13 @@ HRESULT SubstanceManager::AddSubstance(const std::wstring& name, unique_ptr<Mate
 
 	return DXR_OK;
 }
-HRESULT SubstanceManager::AddMaterial(const Material& material)
+HRESULT CSubstanceManager::AddMaterial(const Material& material)
 {
 
 	return E_NOTIMPL;
 }
 
-Material SubstanceManager::CreateMaterial(
+Material CSubstanceManager::CreateMaterial(
 	std::string name,
 	float roughness,
 	DirectX::XMVECTOR fresnelR0,
@@ -74,7 +74,7 @@ Material SubstanceManager::CreateMaterial(
 	return matertial;
 }
 
-HRESULT SubstanceManager::AddTexture(
+HRESULT CSubstanceManager::AddTexture(
 	std::uint32_t substanceID,
 	const std::wstring& name,
 	ID3D12GraphicsCommandList* commandList, TEXTURE_TYPE type,
@@ -135,7 +135,7 @@ HRESULT SubstanceManager::AddTexture(
 	return DXR_OK;
 }
 
-HRESULT SubstanceManager::CreateTexture(const std::wstring& name, unique_ptr<Texture>& texture, ID3D12GraphicsCommandList* commandList)
+HRESULT CSubstanceManager::CreateTexture(const std::wstring& name, unique_ptr<Texture>& texture, ID3D12GraphicsCommandList* commandList)
 {
 	if (!DeviceRef) { return false; }
 	std::wstring ext = GetFileExtensionToLower(name);
@@ -159,7 +159,7 @@ HRESULT SubstanceManager::CreateTexture(const std::wstring& name, unique_ptr<Tex
 	return DXR_OK;
 }
 
-bool SubstanceManager::MaterialEqual(const Material* pMat0, const Material* pMat1)
+bool CSubstanceManager::MaterialEqual(const Material* pMat0, const Material* pMat1)
 {
 	if (!DirectX::XMVectorEqual(pMat0->ambient, pMat1->ambient).m128_f32[0] ||
 		!DirectX::XMVectorEqual(pMat0->DiffuseAlbedo, pMat1->DiffuseAlbedo).m128_f32[0] ||
@@ -175,7 +175,7 @@ bool SubstanceManager::MaterialEqual(const Material* pMat0, const Material* pMat
 	return true;
 }
 
-void SubstanceManager::BuildTextureSRVDescriptors(ID3D12DescriptorHeap* cbvSrvDescriptorHeap, UINT cbvSrvDescriptorSize)
+void CSubstanceManager::BuildTextureSRVDescriptors(ID3D12DescriptorHeap* cbvSrvDescriptorHeap, UINT cbvSrvDescriptorSize)
 {
 	
 	// Fill out the heap with actual descriptors
@@ -200,6 +200,6 @@ void SubstanceManager::BuildTextureSRVDescriptors(ID3D12DescriptorHeap* cbvSrvDe
 	}
 }
 
-void SubstanceManager::Log(char*, ...)
+void CSubstanceManager::Log(char*, ...)
 {
 }

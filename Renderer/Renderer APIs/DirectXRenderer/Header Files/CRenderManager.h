@@ -1,60 +1,37 @@
 #ifndef RENDERMANAGER_H
 #define RENDERMANAGER_H
 
-#include "IEngineObject.h"
-#include "IRenderDevice.h"
-#include "FrameResource.h"
-
-#include "Material.h"
-#include "SubstanceManager.h"
-#include "CRenderItem.h"
-
-#include <CustomReturnValues.h>
-#include <wrl.h>
-#include <filesystem>
-#include <array>
 #include <dxgi1_6.h>
-#include <queue>
-#include <CCommandListPool.h>
-#include <CRenderThreads.h>
-#include "CSwapChain.h"
-#include "CTerrain.h"
-#include <future>
-#include <scoped_allocator>
+#include <array>
+#include <string>
+#include <filesystem>
 #include <dxgidebug.h>
-#include "MemoryUtil.h"
-#include <CMeshManager.h>
+#include <unordered_map>
+#include <fstream>
+
+#include "CCommandListPool.h"
+#include "CSubstanceManager.h"
+#include "CRenderThreads.h"
+#include "SFrameResource.h"
+#include "IRenderDevice.h"
+#include "CMeshManager.h"
+#include "CRenderItem.h"
+#include "CSwapChain.h"
 
 struct Texture;
 struct MeshGeometry;
 struct CTerrain;
-struct LiveObjectReporter
-{
-	~LiveObjectReporter()
-	{
-		Microsoft::WRL::ComPtr<IDXGIDebug1> dxgi_debug;
-		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgi_debug.GetAddressOf()))))
-		{
-			dxgi_debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
-		}
-	}
-};
-#include <CEvent.h>
-
-class DXRenderManager : public IRenderDevice, public IEngineObject
+class CRenderManager : public IRenderDevice
 {
 public:
 private:	
 
-	LiveObjectReporter lvrptr;
 	std::vector<HWND> WindowHandleList; //[MAX_3DHWND];  // 3D render window handle
 
 	int Width;           // app width
 	int Height;          // app height
 	bool bIsRunning;          // after succesful initialization
 	static const UINT WindowCount = 4;          // number of active windows 
-
-
 
 	std::atomic_bool bDone = false;
 	//// Set true to use 4X MSAA (§4.1.8).  The default is false.
@@ -92,7 +69,7 @@ private:
 
 	unique_ptr<ID3D12DescriptorHeap> RtvDescriptorHeap;
 	unique_ptr<ID3D12DescriptorHeap> DsvDescriptorHeap;
-	D3D12_RECT     ScissorRect;
+	D3D12_RECT	ScissorRect;
 
 	DXGI_FORMAT BackBufferFormat;
 	DXGI_FORMAT DepthBufferFormat;
@@ -103,7 +80,7 @@ private:
 	RECT OutputScreenSize;
 	//frame resource
 	static const int FrameResourcesCount = 3;
-	std::shared_ptr<FrameResource> CurrentFrameResources;
+	std::shared_ptr<SFrameResource> CurrentFrameResources;
 	int CurrentFrameResourcesIndex;
 	FrameConstants FrameConstantBuffer;  // index 0 of pass cbuffer.
 
@@ -116,7 +93,7 @@ private:
 	std::vector<std::shared_ptr<CRenderItem>> RenderitemList;
 	std::vector<std::shared_ptr<CRenderItem>> RenderItemLayerList[(int)RenderLayer::Count];
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> ShaderObjectMap;
-	std::array<std::shared_ptr<FrameResource>, FrameResourcesCount> FrameResourceList;
+	std::array<std::shared_ptr<SFrameResource>, FrameResourcesCount> FrameResourceList;
 	
 	int FrameConstBufferCount = 4;
 	Microsoft::WRL::ComPtr<IDXGIAdapter1> Adapter;
@@ -138,19 +115,18 @@ private:
 	float mSunPhi = DirectX::XM_PIDIV4;
 	float Radius = 5.0f;
 	float Theta = 1.5f * DirectX::XM_PI;
-	
 
 	//global for now should be ()
-	unique_ptr<SubstanceManager> SubstanceManagerPtr;
+	unique_ptr<CSubstanceManager> SubstanceManagerPtr;
 	unique_ptr<CMeshManager> MeshManager;
 public:
-	DXRenderManager(HINSTANCE hDLL,
+	CRenderManager(HINSTANCE hDLL,
 		DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM,
 		DXGI_FORMAT depthBufferFormat = DXGI_FORMAT_D24_UNORM_S8_UINT, // depth stencil 
 		D3D_FEATURE_LEVEL minFeatureLevel = D3D_FEATURE_LEVEL_11_0,
 		unsigned int flags = 0);
 
-	~DXRenderManager(void) = default;
+	~CRenderManager(void) = default;
 	
 	virtual HRESULT Direct3DInit(const HWND& hWnd, const std::vector<HWND>& hWnd3D, int nMinDepth, int nMinStencil, bool bSaveLog);
 	virtual void InitializeScene();
@@ -174,14 +150,8 @@ public:
 	bool CreateResources(void);
 	void CreateFrameResource(void);
 	virtual void BuildMeshBuffer(struct MeshData& meshData);
-	//Rendering
 
-
-	void WaitForGpu(int i);
-	//void UpdateRenderObjectsFromPhysX();
-	// <-  revise 
-	void UpdateForResize(UINT clientWidth, UINT clientHeight);// <-  revise 
-	//void UpdateCamera(POINT pos);// <-  revise 
+	void UpdateForResize(UINT clientWidth, UINT clientHeight);
 	bool UpdateColorSpace(int i);
 	void CreateShaderAndInputLayout(void);
 	void BuildRootSignature(void);
@@ -190,15 +160,14 @@ public:
 	void CreateShaderResourceView(std::vector<unique_ptr<Texture>>& mTextures, bool isCubeMap = false);
 	void UpdateObjectCB(void);
 	void UpdateCameraCB(const DirectX::XMMATRIX& view3D, const DirectX::XMMATRIX& ProjectionPerspective, const DirectX::XMVECTOR& position, int index);
-	//void UpdateMainPassCB(void);
+
 	void UpdateSubstanceCB(void);
 	void UpdateMaterialCB(void);
 
-	HRESULT OnResize(LONG width, LONG height, bool minimized);// <-  revise 
-	HRESULT Tick(void);// <-  revise 
+	HRESULT OnResize(LONG width, LONG height, bool minimized);
+	HRESULT Tick(void);
 
-	HRESULT LoadSwapChain(DXGI_SWAP_CHAIN_DESC& outDesc, int nMsaa);// <- todo delete
-	// <- todo delete
+	HRESULT LoadSwapChain(DXGI_SWAP_CHAIN_DESC& outDesc, int nMsaa);
 	HRESULT LogAdapterOutputs(const Microsoft::WRL::ComPtr<IDXGIAdapter1> pAdapter);
 	HRESULT LogOutputDisplayModes(const Microsoft::WRL::ComPtr<IDXGIOutput> pAdapterOutput, DXGI_FORMAT format);
 	HRESULT OnUpdate(float deltaTime, float keyboardStat, POINT position);

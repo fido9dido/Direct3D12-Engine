@@ -1,24 +1,16 @@
-#include "DXRenderManager.h"
-#include "CRenderUtil.h"
-#include "CSwapChain.h"
-#include "CCommandlist.h"
-#include "MeshGeometry.h"
-#include "Texture.h"
-#include "CTerrain.h"
-#include <future>
-#include <d3dx12.h>
-#include <dxgidebug.h>
+#include "CRenderManager.h"
+#include "CustomReturnValues.h"
 #include <DirectXColors.h>
-#include <DDSTextureLoader.h>
-#include <WICTextureLoader.h>
-#include <RenderTargetState.h>
-#include <CRenderItem.h>
+#include "MeshGeometry.h"
+#include "CRenderUtil.h"
+#include "CTerrain.h"
+
 
 HRESULT CreateRenderDevice(HINSTANCE hDLL, std::unique_ptr<IRenderDevice>* pDevice)
 {
 	if (pDevice && !*pDevice)
 	{
-		*pDevice = std::make_unique<DXRenderManager>(hDLL);
+		*pDevice = std::make_unique<CRenderManager>(hDLL);
 		return DXR_OK;
 	}
 	return DXR_FAIL;
@@ -34,7 +26,7 @@ HRESULT ShutdownRenderDevice(std::unique_ptr<IRenderDevice>* pDevice)
 	return DXR_OK;
 }
 
-DXRenderManager::DXRenderManager(HINSTANCE dllHandle,
+CRenderManager::CRenderManager(HINSTANCE dllHandle,
 	DXGI_FORMAT backBufferFormat,
 	DXGI_FORMAT depthBufferFormat,
 	D3D_FEATURE_LEVEL minFeatureLevel,
@@ -49,7 +41,7 @@ DXRenderManager::DXRenderManager(HINSTANCE dllHandle,
 	ColorSpaceType(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709),
 	Options(flags),
 	CurrentFrameResourcesIndex(0),
-	CurrentFrameResources(std::make_shared<FrameResource>()),
+	CurrentFrameResources(std::make_shared<SFrameResource>()),
 	RenderPool(bDone), DCTerrain(make_unique<CTerrain>()),
 	MeshManager(make_unique<CMeshManager>())
 {
@@ -57,7 +49,7 @@ DXRenderManager::DXRenderManager(HINSTANCE dllHandle,
 
 }
 
-HRESULT DXRenderManager::Direct3DInit(const HWND& hWndMain, const std::vector<HWND>& hWnd3D,
+HRESULT CRenderManager::Direct3DInit(const HWND& hWndMain, const std::vector<HWND>& hWnd3D,
 	int width, int height, bool bSaveLog)
 {
 	bIsRunning = true;
@@ -81,7 +73,7 @@ HRESULT DXRenderManager::Direct3DInit(const HWND& hWndMain, const std::vector<HW
 	return DXR_OK;
 }
 
-void DXRenderManager::InitializeScene()
+void CRenderManager::InitializeScene()
 {
 	CreateFrameResource();
 	CreateResources();
@@ -90,12 +82,12 @@ void DXRenderManager::InitializeScene()
 	CommandListPool->WaitforGPU();
 }
 
-HRESULT DXRenderManager::UseWindow(UINT nHwnd)
+HRESULT CRenderManager::UseWindow(UINT nHwnd)
 {
 	return E_NOTIMPL;
 }
 
-HRESULT DXRenderManager::BeginRendering()
+HRESULT CRenderManager::BeginRendering()
 {
 	RenderPool.BeginRender();
 
@@ -145,11 +137,11 @@ HRESULT DXRenderManager::BeginRendering()
 	return DXR_OK;
 }
 
-void DXRenderManager::EndRendering()
+void CRenderManager::EndRendering()
 {
 }
 
-HRESULT DXRenderManager::Clear(ID3D12GraphicsCommandList* commandList, int threadIndex)
+HRESULT CRenderManager::Clear(ID3D12GraphicsCommandList* commandList, int threadIndex)
 {
 	// Reuse the memory associated with command recording.
 	// We can only reset when the associated command lists have finished execution on the GPU.
@@ -182,20 +174,20 @@ HRESULT DXRenderManager::Clear(ID3D12GraphicsCommandList* commandList, int threa
 	return DXR_FAIL;
 }
 
-void DXRenderManager::SetClearColor(float fRed, float fBlue, float FGreen)
+void CRenderManager::SetClearColor(float fRed, float fBlue, float FGreen)
 {
 }
 
-void DXRenderManager::ShutDown()
+void CRenderManager::ShutDown()
 {
 }
 
-bool DXRenderManager::IsRunning()
+bool CRenderManager::IsRunning()
 {
 	return bIsRunning;
 }
 
-void DXRenderManager::UpdateSelectedDynamicActor(const DirectX::XMMATRIX& worldMatrix, int index)
+void CRenderManager::UpdateSelectedDynamicActor(const DirectX::XMMATRIX& worldMatrix, int index)
 {
 	//temporarily Assumes each physics item contains a single actor
 	if (index < RenderItemLayerList[(int)RenderLayer::OpaquePhysics].size() - 1) { return; }
@@ -206,7 +198,7 @@ void DXRenderManager::UpdateSelectedDynamicActor(const DirectX::XMMATRIX& worldM
 
 }
 
-HRESULT DXRenderManager::LogAdapterOutputs(const Microsoft::WRL::ComPtr<IDXGIAdapter1> pAdapter)
+HRESULT CRenderManager::LogAdapterOutputs(const Microsoft::WRL::ComPtr<IDXGIAdapter1> pAdapter)
 {
 	int i = 0;
 	Microsoft::WRL::ComPtr<IDXGIOutput> pAdapterOutput;
@@ -224,7 +216,7 @@ HRESULT DXRenderManager::LogAdapterOutputs(const Microsoft::WRL::ComPtr<IDXGIAda
 	return DXR_OK;
 
 }
-HRESULT DXRenderManager::LogOutputDisplayModes(const Microsoft::WRL::ComPtr<IDXGIOutput> pAdapterOutput, DXGI_FORMAT format)
+HRESULT CRenderManager::LogOutputDisplayModes(const Microsoft::WRL::ComPtr<IDXGIOutput> pAdapterOutput, DXGI_FORMAT format)
 {
 	UINT count = 0;
 	UINT flags = 0;
@@ -245,7 +237,7 @@ HRESULT DXRenderManager::LogOutputDisplayModes(const Microsoft::WRL::ComPtr<IDXG
 	}
 	return DXR_OK;
 }
-HRESULT DXRenderManager::OnUpdate(float deltaTime, float keyboard, POINT mousePosition)
+HRESULT CRenderManager::OnUpdate(float deltaTime, float keyboard, POINT mousePosition)
 {
 	// Cycle through the circular frame resource array.
 	CurrentFrameResourcesIndex = (CurrentFrameResourcesIndex + 1) % FrameResourcesCount;
@@ -262,7 +254,7 @@ HRESULT DXRenderManager::OnUpdate(float deltaTime, float keyboard, POINT mousePo
 
 	return DXR_OK;
 }
-void DXRenderManager::UpdateObjectCB()
+void CRenderManager::UpdateObjectCB()
 {
 	std::shared_ptr<UploadBuffer<ObjectConstants>> currentObjectBuffer = CurrentFrameResources->ObjectCB;
 	for (std::shared_ptr<CRenderItem>& item : RenderitemList)
@@ -287,7 +279,7 @@ void DXRenderManager::UpdateObjectCB()
 	}
 }
 // camera index in frame resource
-void DXRenderManager::UpdateCameraCB(const DirectX::XMMATRIX& view3D, const DirectX::XMMATRIX& ProjectionPerspective, const DirectX::XMVECTOR& position, int index)
+void CRenderManager::UpdateCameraCB(const DirectX::XMMATRIX& view3D, const DirectX::XMMATRIX& ProjectionPerspective, const DirectX::XMVECTOR& position, int index)
 {
 	UploadBuffer<FrameConstants>* currentPassCB = CurrentFrameResources->FrameCB.get();
 	if (!currentPassCB) { return; }
@@ -310,7 +302,7 @@ void DXRenderManager::UpdateCameraCB(const DirectX::XMMATRIX& view3D, const Dire
 	FrameConstantBuffer.Lights[0].Strength = { 1.0f, 1.0f, 0.9f };
 	currentPassCB->CopyData(index, FrameConstantBuffer);
 }
-void DXRenderManager::UpdateSubstanceCB()
+void CRenderManager::UpdateSubstanceCB()
 {
 	UploadBuffer<SubstanceData>* currentSubstanceCB = CurrentFrameResources->SubstanceCB.get();
 	const std::vector<unique_ptr<Substance>>& substances = SubstanceManagerPtr->GetAllSubstances();
@@ -338,7 +330,7 @@ void DXRenderManager::UpdateSubstanceCB()
 		}
 	}
 }
-void DXRenderManager::UpdateMaterialCB()
+void CRenderManager::UpdateMaterialCB()
 {
 	UploadBuffer<MaterialData>* currentMaterialCB = CurrentFrameResources->MaterialCB.get();
 	const std::vector<unique_ptr<Material>>& materials = SubstanceManagerPtr->GetAllMaterial();
@@ -361,14 +353,14 @@ void DXRenderManager::UpdateMaterialCB()
 }
 
 
-void DXRenderManager::UpdateForResize(UINT clientWidth, UINT clientHeight)
+void CRenderManager::UpdateForResize(UINT clientWidth, UINT clientHeight)
 {
 	Width = clientWidth;
 	Height = clientHeight;
 	AspectRatio = static_cast<float>(clientWidth) / static_cast<float>(clientHeight);
 }
 
-bool DXRenderManager::CreateResources()
+bool CRenderManager::CreateResources()
 {
 	if (!WindowHandleList[1])
 	{
@@ -519,16 +511,16 @@ bool DXRenderManager::CreateResources()
 	return DXR_OK;
 }
 
-void DXRenderManager::CreateFrameResource()
+void CRenderManager::CreateFrameResource()
 {
 	for (int nFrameResources = 0; nFrameResources < FrameResourcesCount; ++nFrameResources)
 	{
-		FrameResourceList[nFrameResources] = make_unique<FrameResource>(Device.get(), FrameConstBufferCount,
+		FrameResourceList[nFrameResources] = make_unique<SFrameResource>(Device.get(), FrameConstBufferCount,
 			(UINT)RenderitemList.size(), 0, (UINT)SubstanceManagerPtr->GetAllSubstances().size(), (UINT)SubstanceManagerPtr->GetAllMaterial().size(), 0/* m_pWaves->VertexCount()*/);
 	}
 }
 
-HRESULT DXRenderManager::CreatePipelineStateObject()
+HRESULT CRenderManager::CreatePipelineStateObject()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -607,12 +599,12 @@ HRESULT DXRenderManager::CreatePipelineStateObject()
 		return DXR_OK;
 }
 
-HRESULT DXRenderManager::Tick()
+HRESULT CRenderManager::Tick()
 {
 	return BeginRendering();
 }
 
-void DXRenderManager::CreateShaderAndInputLayout()
+void CRenderManager::CreateShaderAndInputLayout()
 {
 	std::wstring path = DirectoryPath.wstring();
 	ShaderObjectMap["standardVS"] = CompileShader((path + L"\\Shader Files\\Shader.hlsl").c_str(), nullptr,
@@ -637,7 +629,7 @@ void DXRenderManager::CreateShaderAndInputLayout()
 	};
 }
 
-HRESULT DXRenderManager::CreateDevice(void)
+HRESULT CRenderManager::CreateDevice(void)
 {
 #if defined(_DEBUG)
 	// Enable the debug layer (requires the Graphics Tools "optional feature").
@@ -795,12 +787,12 @@ HRESULT DXRenderManager::CreateDevice(void)
 	}
 	//fill heap with descriptors
 	bIsRunning = true;
-	SubstanceManagerPtr = make_unique<SubstanceManager>(Device.get(), nullptr);
+	SubstanceManagerPtr = make_unique<CSubstanceManager>(Device.get(), nullptr);
 
 	return DXR_OK;
 }
 
-void DXRenderManager::CreateSubstance(void)
+void CRenderManager::CreateSubstance(void)
 {
 	std::wstring path = DirectoryPath.wstring();
 
@@ -853,7 +845,7 @@ void DXRenderManager::CreateSubstance(void)
 	CommandListPool->ReturnCommandList(commandList);
 }
 
-void DXRenderManager::CreateShaderResourceView(std::vector<unique_ptr<Texture>>& mTextures, bool isCubeMap)
+void CRenderManager::CreateShaderResourceView(std::vector<unique_ptr<Texture>>& mTextures, bool isCubeMap)
 {
 	auto length = mTextures.size();
 	if (length <= 0)
@@ -933,7 +925,7 @@ void DXRenderManager::CreateShaderResourceView(std::vector<unique_ptr<Texture>>&
 }
 
 //swap chain windowed and one windows TODO CHANGE THIS
-HRESULT DXRenderManager::LoadSwapChain(DXGI_SWAP_CHAIN_DESC& outDesc, int nMsaa)
+HRESULT CRenderManager::LoadSwapChain(DXGI_SWAP_CHAIN_DESC& outDesc, int nMsaa)
 {
 	// 0 match windows size and desktop refresh rate
 	outDesc.BufferDesc.Width = 0;
@@ -961,16 +953,16 @@ HRESULT DXRenderManager::LoadSwapChain(DXGI_SWAP_CHAIN_DESC& outDesc, int nMsaa)
 	return DXR_OK;
 }
 
-void DXRenderManager::BuildMeshBuffer(MeshData& meshData)
+void CRenderManager::BuildMeshBuffer(MeshData& meshData)
 {
 	MeshManager->CreateMeshBuffer(meshData);
 
 }
 
-void DXRenderManager::RemoveRenderItem(std::string name)
+void CRenderManager::RemoveRenderItem(std::string name)
 {
 }
-void DXRenderManager::OnDeviceLost()
+void CRenderManager::OnDeviceLost()
 {
 	// TODO: Perform Direct3D resource cleanup.
 	for (size_t i = 0; i < WindowCount; i++)
@@ -1002,7 +994,7 @@ void DXRenderManager::OnDeviceLost()
 }
 
 // Prepare to render the next frame.
-bool DXRenderManager::MoveToNextFrame(int i)
+bool CRenderManager::MoveToNextFrame(int i)
 {
 	if (SwapChainList.size() < i) { return false; }
 	const UINT64 currentFenceValue = CommandListPool->GetFenceValue();
@@ -1018,7 +1010,7 @@ bool DXRenderManager::MoveToNextFrame(int i)
 	return DXR_OK;
 }
 
-HRESULT DXRenderManager::OnResize(LONG width, LONG height, bool minimized)
+HRESULT CRenderManager::OnResize(LONG width, LONG height, bool minimized)
 {
 	//main width and height
 	Width = width;
@@ -1046,7 +1038,7 @@ HRESULT DXRenderManager::OnResize(LONG width, LONG height, bool minimized)
 
 }
 
-bool DXRenderManager::UpdateColorSpace(int i)
+bool CRenderManager::UpdateColorSpace(int i)
 {
 	if (SwapChainList.size() < i) { return false; }
 	IDXGISwapChain3* currentSwapChain = SwapChainList[i]->Get();
@@ -1106,7 +1098,7 @@ bool DXRenderManager::UpdateColorSpace(int i)
 	return true;
 }
 
-void DXRenderManager::BuildRootSignature()
+void CRenderManager::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(
@@ -1195,7 +1187,7 @@ void DXRenderManager::BuildRootSignature()
 		__uuidof(ID3D12RootSignature), &RootSignatureMap["RootSigCS"]));
 }
 
-void DXRenderManager::BuildSamplerDesc()
+void CRenderManager::BuildSamplerDesc()
 {
 	//TODO USE it to create sampler
 	D3D12_DESCRIPTOR_HEAP_DESC samplerDescHeap = {};
@@ -1218,7 +1210,7 @@ void DXRenderManager::BuildSamplerDesc()
 	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 }
 
-void DXRenderManager::BuildTextureSRVDescriptors()
+void CRenderManager::BuildTextureSRVDescriptors()
 {
 	//// Describe and create a constant buffer view (CBV) and shader resource view (SRV) descriptor heap.
 	D3D12_DESCRIPTOR_HEAP_DESC cbvSRVHeapDesc = {};
@@ -1254,7 +1246,7 @@ void DXRenderManager::BuildTextureSRVDescriptors()
 	}
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> DXRenderManager::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> CRenderManager::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
@@ -1324,7 +1316,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> DXRenderManager::GetStaticSampl
 	};
 }
 
-int DXRenderManager::ExecuteRenderThread(int threadIndex)
+int CRenderManager::ExecuteRenderThread(int threadIndex)
 {
 	while (true)
 	{
@@ -1385,7 +1377,7 @@ int DXRenderManager::ExecuteRenderThread(int threadIndex)
 	return 0;
 }
 
-void DXRenderManager::DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>> renderItemLayer)
+void CRenderManager::DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>> renderItemLayer)
 {
 	UINT objCBByteSize = CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& objectCB = CurrentFrameResources->ObjectCB->GetResource();
@@ -1403,18 +1395,18 @@ void DXRenderManager::DrawRenderItems(ID3D12GraphicsCommandList* commandList, co
 	}
 }
 
-void DXRenderManager::ConfigureRenderThreads()
+void CRenderManager::ConfigureRenderThreads()
 {
 #if !SINGLETHREADED
 
 	for (int i = 0; i < 4; i++)
 	{
-		RenderPool.Submit(&DXRenderManager::ExecuteRenderThread, this, i);;
+		RenderPool.Submit(&CRenderManager::ExecuteRenderThread, this, i);;
 	}
 #endif
 }
 
-void DXRenderManager::GetAdapter(IDXGIAdapter1** ppAdapter)
+void CRenderManager::GetAdapter(IDXGIAdapter1** ppAdapter)
 {
 	*ppAdapter = nullptr;
 	Microsoft::WRL::ComPtr<IDXGIAdapter1> adapter;
@@ -1496,7 +1488,7 @@ void DXRenderManager::GetAdapter(IDXGIAdapter1** ppAdapter)
 	*ppAdapter = adapter.Detach();
 }
 
-void DXRenderManager::BuildRenderItem(std::shared_ptr<CRenderItem>& renderItem, const std::string& primitiveName)
+void CRenderManager::BuildRenderItem(std::shared_ptr<CRenderItem>& renderItem, const std::string& primitiveName)
 {
 	if (const std::shared_ptr<MeshGeometry>& meshGeometry = MeshManager->GetMeshGeometry(primitiveName))
 	{
@@ -1511,4 +1503,8 @@ void DXRenderManager::BuildRenderItem(std::shared_ptr<CRenderItem>& renderItem, 
 		RenderItemLayerList[(int)renderItem->Layer].push_back(renderItem);
 		RenderitemList.emplace_back(renderItem);
 	}
+}
+
+void CRenderManager::OnRenderComponentRemoved(std::shared_ptr<CRenderItem> renderItem)
+{
 }

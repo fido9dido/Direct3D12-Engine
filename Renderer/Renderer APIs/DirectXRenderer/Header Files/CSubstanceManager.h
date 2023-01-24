@@ -15,7 +15,7 @@
 
 #define MAX_TEXTURES 131072
 //TODO  add alpha blending
-class SubstanceManager : public SubstanceManagerBase
+class CSubstanceManager : public SubstanceManagerBase
 {
 private:
 
@@ -23,9 +23,9 @@ private:
 	struct ID3D12Device* DeviceRef;
 public:
 
-	SubstanceManager(struct ID3D12Device* pDevice, FILE* pLog);
-	SubstanceManager() = default;
-	~SubstanceManager() = default;
+	CSubstanceManager(struct ID3D12Device* pDevice, FILE* pLog);
+	CSubstanceManager() = default;
+	~CSubstanceManager() = default;
 
 	HRESULT AddSubstance(const std::wstring& name, unique_ptr<Material>& material);
 	HRESULT AddMaterial(const Material& material);

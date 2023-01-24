@@ -10,8 +10,6 @@
 
 enum class DEVICESTATUS :int;
 
-
-
 class IRenderDevice
 {
 public:

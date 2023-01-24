@@ -176,11 +176,11 @@
     <ClInclude Include="Header Files\CThreadTask.h" />
     <ClInclude Include="Header Files\Utility.h" />
     <ClInclude Include="Header Files\MeshGeometry.h" />
-    <ClInclude Include="Header Files\DXRenderManager.h" />
-    <ClInclude Include="Header Files\SubstanceManager.h" />
+    <ClInclude Include="Header Files\CRenderManager.h" />
+    <ClInclude Include="Header Files\CSubstanceManager.h" />
     <ClInclude Include="Header Files\CTerrain.h" />
     <ClInclude Include="Header Files\Texture.h" />
-    <ClInclude Include="Header Files\FrameResource.h" />
+    <ClInclude Include="Header Files\SFrameResource.h" />
     <ClInclude Include="Header Files\Material.h" />
     <ClInclude Include="Header Files\SubstanceManagerBase.h" />
     <ClInclude Include="Header Files\ThreadQueue.h" />
@@ -195,10 +195,10 @@
     <ClCompile Include="Source Files\CThreads.cpp" />
     <ClCompile Include="Source Files\CSwapChain.cpp" />
     <ClCompile Include="Source Files\CThreadPool.cpp" />
-    <ClCompile Include="Source Files\DXRenderManager.cpp" />
-    <ClCompile Include="Source Files\FrameResource.cpp" />
+    <ClCompile Include="Source Files\CRenderManager.cpp" />
+    <ClCompile Include="Source Files\SFrameResource.cpp" />
     <ClCompile Include="Source Files\HelperFunctions.cpp" />
-    <ClCompile Include="Source Files\SubstanceManager.cpp" />
+    <ClCompile Include="Source Files\CSubstanceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DirectXRenderer.def" />

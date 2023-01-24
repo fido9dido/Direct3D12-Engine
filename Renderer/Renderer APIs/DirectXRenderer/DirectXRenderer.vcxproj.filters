@@ -21,13 +21,13 @@
     <ClInclude Include="Header Files\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\DXRenderManager.h">
+    <ClInclude Include="Header Files\CRenderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\FrameResource.h">
+    <ClInclude Include="Header Files\SFrameResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\Material.h">
@@ -36,7 +36,7 @@
     <ClInclude Include="Header Files\UploadBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\SubstanceManager.h">
+    <ClInclude Include="Header Files\CSubstanceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\SubstanceManagerBase.h">
@@ -86,16 +86,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\DXRenderManager.cpp">
+    <ClCompile Include="Source Files\CRenderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\HelperFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\FrameResource.cpp">
+    <ClCompile Include="Source Files\SFrameResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\SubstanceManager.cpp">
+    <ClCompile Include="Source Files\CSubstanceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source Files\CSwapChain.cpp">

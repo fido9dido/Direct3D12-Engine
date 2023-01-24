@@ -1,10 +1,10 @@
-#include "FrameResource.h"
+#include "SFrameResource.h"
 
-FrameResource::FrameResource() : FrameCB(nullptr), ObjectCB(nullptr), SubstanceCB(nullptr), MaterialCB(nullptr)
+SFrameResource::SFrameResource() : FrameCB(nullptr), ObjectCB(nullptr), SubstanceCB(nullptr), MaterialCB(nullptr)
 {
 }
 
-FrameResource::FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT substanceCount, UINT materialCount, UINT nWaveVB)
+SFrameResource::SFrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT substanceCount, UINT materialCount, UINT nWaveVB)
 	: FrameCB(nullptr), ObjectCB(nullptr), SubstanceCB(nullptr), MaterialCB(nullptr)
 {
 	for (size_t i = 0; i < 4; i++)

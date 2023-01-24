@@ -44,13 +44,13 @@ struct FrameConstants
 };
 
 #// Stores the resources needed for the CPU to build the command lists for a frame.  
-struct FrameResource
+struct SFrameResource
 {
-	FrameResource();
-	FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT substanceCount, UINT materialCount, UINT nWaveVB);
+	SFrameResource();
+	SFrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT substanceCount, UINT materialCount, UINT nWaveVB);
 
-	FrameResource(const FrameResource& rhs) = delete;
-	FrameResource& operator=(const FrameResource& rhs) = delete;
+	SFrameResource(const SFrameResource& rhs) = delete;
+	SFrameResource& operator=(const SFrameResource& rhs) = delete;
 	
 	//ID3D12CommandList* m_batchSubmit[NumContexts * 2 + CommandListCount];
 

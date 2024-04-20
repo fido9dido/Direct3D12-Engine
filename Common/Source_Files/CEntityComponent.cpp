@@ -9,14 +9,14 @@ CEntityComponent::CEntityComponent(CEntityComponent&& other) :
 }
 
 CEntityComponent::CEntityComponent( CEntityComponent& other) :
-	ComponentList(std::move(other.ComponentList))
-		, GeneratedComponentsCount(std::move(other.GeneratedComponentsCount))
+	ComponentList(other.ComponentList)
+		, GeneratedComponentsCount(other.GeneratedComponentsCount)
 {
 }
 
 CEntityComponent::CEntityComponent(const CEntityComponent& other) :
-	ComponentList(std::move(other.ComponentList))
-	, GeneratedComponentsCount(std::move(other.GeneratedComponentsCount))
+	ComponentList(other.ComponentList)
+	, GeneratedComponentsCount(other.GeneratedComponentsCount)
 {
 }
 void CEntityComponent::RemoveComponent(IComponent* child)

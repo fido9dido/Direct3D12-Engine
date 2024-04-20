@@ -33,7 +33,8 @@ private:
 	bool bIsRunning;          // after succesful initialization
 	static const UINT WindowCount = 4;          // number of active windows 
 
-	std::atomic_bool bDone = false;
+	//std::atomic_bool bDone = false;
+	bool bDone = false;
 	//// Set true to use 4X MSAA (§4.1.8).  The default is false.
 	bool bIsMsaaEnabled;    // 4X MSAA enabled
 	bool bIsTearingSupport;
@@ -110,6 +111,8 @@ private:
 	unsigned int Options;
 
 	//constants here temporarily TODO move when making buffers
+	
+	//
 	static const unsigned int bAllowTearing = 0x1;
 	float mSunTheta = 1.25f * DirectX::XM_PI;
 	float mSunPhi = DirectX::XM_PIDIV4;
@@ -144,7 +147,7 @@ public:
 	HRESULT CreatePipelineStateObject(void);
 	
 	void CreateSubstance(void);
-	void DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>> renderItemLayer);
+	inline void DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>>& renderItemLayer);
 	void OnDeviceLost(void);
 	bool MoveToNextFrame(int i);
 	bool CreateResources(void);
@@ -172,7 +175,7 @@ public:
 	HRESULT LogOutputDisplayModes(const Microsoft::WRL::ComPtr<IDXGIOutput> pAdapterOutput, DXGI_FORMAT format);
 	HRESULT OnUpdate(float deltaTime, float keyboardStat, POINT position);
 
-	void RemoveRenderItem(std::string name);
+	void RemoveRenderItem(std::string& name);
 
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> GetStaticSamplers(void);
 	int  ExecuteRenderThread(int threadIndex);

@@ -40,7 +40,7 @@ public:
 	void SetMultiChildWindows(std::vector<HWND> g_hWnd3D)override;
 	std::vector<HWND> GetHWnd3D(void);
 	void SetHWnd3D(HWND);
-	BOOL GetbIsActive(void);
+	BOOL IsActive(void);
 
 	void TranslateMessages();
 	

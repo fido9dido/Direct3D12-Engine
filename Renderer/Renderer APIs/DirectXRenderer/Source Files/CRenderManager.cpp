@@ -43,10 +43,9 @@ CRenderManager::CRenderManager(HINSTANCE dllHandle,
 	CurrentFrameResourcesIndex(0),
 	CurrentFrameResources(std::make_shared<SFrameResource>()),
 	RenderPool(bDone), DCTerrain(make_unique<CTerrain>()),
-	MeshManager(make_unique<CMeshManager>())
+	MeshManager(make_unique<CMeshManager>()),
+	DirectoryPath(std::filesystem::current_path())
 {
-	DirectoryPath = std::filesystem::current_path();
-
 }
 
 HRESULT CRenderManager::Direct3DInit(const HWND& hWndMain, const std::vector<HWND>& hWnd3D,
@@ -95,7 +94,7 @@ HRESULT CRenderManager::BeginRendering()
 	HRESULT hr;
 	for (UINT i = 0; i < WindowCount; i++)
 	{
-		if (SwapChainList.size() < i) { return false; }
+		if (SwapChainList.size() < i) { return DXR_FAIL; }
 		IDXGISwapChain3* currentSwapChain = SwapChainList[i]->Get();
 		if (Options & bAllowTearing)
 		{
@@ -344,6 +343,8 @@ void CRenderManager::UpdateMaterialCB()
 			DirectX::XMStoreFloat4(&materialConstants.diffuseAlbedo, currentMaterial->DiffuseAlbedo);
 			DirectX::XMStoreFloat3(&materialConstants.fresnelR0, currentMaterial->FresnelR0);
 			materialConstants.roughness = currentMaterial->Roughness;
+			DirectX::XMMATRIX matTransform = DirectX::XMLoadFloat4x4(&currentMaterial->MaterialTransform);
+			XMStoreFloat4x4(&materialConstants.MaterialTransform, DirectX::XMMatrixTranspose(matTransform));
 
 			currentMaterialCB->CopyData(currentMaterial->MatCBIndex, materialConstants);
 
@@ -959,7 +960,7 @@ void CRenderManager::BuildMeshBuffer(MeshData& meshData)
 
 }
 
-void CRenderManager::RemoveRenderItem(std::string name)
+void CRenderManager::RemoveRenderItem(std::string& name)
 {
 }
 void CRenderManager::OnDeviceLost()
@@ -1320,7 +1321,6 @@ int CRenderManager::ExecuteRenderThread(int threadIndex)
 {
 	while (true)
 	{
-		std::atomic_bool stop_thread_1 = false;
 		WaitForSingleObject(RenderPool.GetWorkerBeginHandle(threadIndex), INFINITE);
 		if (bDone) { return 0; }
 		CCommandList& commandListWrapper = CommandListPool->Get();
@@ -1377,7 +1377,7 @@ int CRenderManager::ExecuteRenderThread(int threadIndex)
 	return 0;
 }
 
-void CRenderManager::DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>> renderItemLayer)
+void CRenderManager::DrawRenderItems(ID3D12GraphicsCommandList* commandList, const std::vector<std::shared_ptr<CRenderItem>>& renderItemLayer)
 {
 	UINT objCBByteSize = CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& objectCB = CurrentFrameResources->ObjectCB->GetResource();

@@ -9,6 +9,7 @@
 struct Vertex {
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT2 TextureCoord;
 };
 
 inline Microsoft::WRL::ComPtr<ID3DBlob> CompileShader(const LPCWSTR srcFile, const  D3D_SHADER_MACRO* defines, const LPCSTR entryPoint, const LPCSTR target)

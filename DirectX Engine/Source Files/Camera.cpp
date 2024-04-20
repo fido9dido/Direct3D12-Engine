@@ -61,7 +61,7 @@ void CCamera::InitOrthogonalCamera(
 	Width = backBufferWidth;
 	Height = backBufferHeight;
 
-	SetMode(RENGINEMODE::Mode_Orthogonal, 0);;
+	SetMode(RENGINEMODE::Mode_Orthogonal, 1);;
 	SetClippingPlanes(0.1f, 2495.f);
 
 	D3D12_VIEWPORT viewPortView = { 0, 0, Width, Height };
@@ -74,7 +74,7 @@ void CCamera::InitOrthogonalCamera(
 
 	ProjectionOrthogonal[Stage] += DirectX::XMMatrixScaling(x, y, z);
 
-	if (n == 1) // XY plane: ront
+	if (n == 1) // XY plane: front
 	{
 		UpVector = DirectX::XMVectorSet(0, 1, 0, 0);
 		Position = DirectX::XMVectorSet(0, 0, 1, 0);
@@ -178,7 +178,7 @@ const HRESULT CCamera::SetView3D()
 	return DXR_OK;
 }
 
-// width and heigh of the main window
+// width and height of the main window
 void CCamera::Prepare2D()
 {
 	View2D = DirectX::XMMatrixIdentity();
@@ -259,6 +259,23 @@ void CCamera::SetClippingPlanes(float nearPlane, float farPlane)
 	}
 	// change 2D projection and view
 	Prepare2D();
+
+	////adjust orthogonal projection
+	//float Q = 1.0f / (FarClippingPlane - NearClippingPlane);
+	//float X = -Q * NearClippingPlane;
+	//ProjectionOrthogonal[0].r[2].m128_f32[2]= ProjectionOrthogonal[1].r[2].m128_f32[2] = Q;
+	//ProjectionOrthogonal[2].r[2].m128_f32[2] = ProjectionOrthogonal[3].r[2].m128_f32[2] = Q;
+	//ProjectionOrthogonal[0].r[3].m128_f32[2] = ProjectionOrthogonal[1].r[3].m128_f32[2] = X;
+	//ProjectionOrthogonal[2].r[3].m128_f32[2] = ProjectionOrthogonal[3].r[3].m128_f32[2] = X;
+
+	////adjust perspective projection
+	//Q *= FarClippingPlane;
+	//X = -Q * NearClippingPlane;
+	//ProjectionPerspective[0].r[2].m128_f32[2] = ProjectionPerspective[1].r[2].m128_f32[2] = Q;
+	//ProjectionPerspective[2].r[2].m128_f32[2] = ProjectionPerspective[3].r[2].m128_f32[2] = Q;
+	//ProjectionPerspective[0].r[3].m128_f32[2] = ProjectionPerspective[1].r[3].m128_f32[2] = X;
+	//ProjectionPerspective[2].r[3].m128_f32[2] = ProjectionPerspective[3].r[3].m128_f32[2] = X;
+
 }
 
 // set mode or stage n, 0:=3D(perspective), 1:=2D(orthogonal)
@@ -352,15 +369,15 @@ void CCamera::UpdateViewProjection()
 	// 2D, perspective or orthogonal mode
 	if (Mode == RENGINEMODE::Mode_Perspective)
 	{
-		ViewProjection = View3D * ProjectionPerspective[Stage];
+		ViewProjection = ProjectionPerspective[Stage] * View3D;
 	}
 	else if (Mode == RENGINEMODE::Mode_2D)
 	{
-		ViewProjection = View2D * Projection2D;
+		ViewProjection =  Projection2D * View2D;
 	}
 	else
 	{
-		ViewProjection = View3D * ProjectionOrthogonal[Stage];
+		ViewProjection =  ProjectionOrthogonal[Stage] * View3D;
 	}
 }
 const std::array<DirectX::XMMATRIX, nStages>& CCamera::GetProjectionPerspective()

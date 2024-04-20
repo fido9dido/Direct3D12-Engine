@@ -12,31 +12,27 @@ CSubstanceManager::CSubstanceManager(ID3D12Device* pDevice, FILE* pLog)
 
 HRESULT CSubstanceManager::AddSubstance(const std::wstring& name, unique_ptr<Material>& mat)
 {
-	bool bMatExists = false;
+	bool bAddMaterial = true;
 	std::uint32_t index;
 
 	Substance substance;
 	for (index = 0; index < MaterialCount; ++index) {
 
 		if (MaterialEqual(mat.get(), MaterialList[index].get())) {
-			bMatExists = true;
+			bAddMaterial = false;
 			break;
 		}
 	}
 
 	substance.SubstanceTransform = MathHelper::Identity4x4();
-
-	if (bMatExists)
+	
+	substance.MaterialIndex = index;
+	if (bAddMaterial)
 	{
-		substance.MaterialIndex = index;
-	}
-	else
-	{
-		substance.MaterialIndex = MaterialCount;
 		mat->MatCBIndex = MaterialCount++;
 		MaterialList.push_back(std::move(mat));
 	}
-
+	
 	for (size_t i = 0; i < 8; i++)
 	{
 		substance.TextureList[i] = MAX_TEXTURES;
@@ -167,8 +163,8 @@ bool CSubstanceManager::MaterialEqual(const Material* pMat0, const Material* pMa
 		!DirectX::XMVectorEqual(pMat0->specular, pMat1->specular).m128_f32[0] ||
 		!DirectX::XMVectorEqual(pMat0->FresnelR0, pMat1->FresnelR0).m128_f32[0] ||
 
-		(pMat0->power != pMat1->power) ||
-		(pMat0->roughness != pMat1->roughness))
+		(pMat0->Power != pMat1->Power) ||
+		(pMat0->Roughness != pMat1->Roughness))
 	{
 		return false;
 	}

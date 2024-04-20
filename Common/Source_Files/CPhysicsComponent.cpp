@@ -92,7 +92,7 @@ IComponent* CPhysicsComponent::BuildComponent()
 		ShapeConfiguration = make_unique<CBoxConfiguration>(
 			physx::PxVec3(0.5f, 0.5f, 0.5f), 
 			physx::PxVec3(initalTranslation.m128_f32[0], initalTranslation.m128_f32[1], initalTranslation.m128_f32[2]),
-			5.f);
+			1.f);
 
 	}
 	else if (Description.ShapeType == ECShapeType::TriangleMesh)

@@ -93,7 +93,7 @@ void MainApp::SetHWnd3D(HWND hWnd)
 	g_hWnd3D.push_back(hWnd);
 }
 
-BOOL MainApp::GetbIsActive(void)
+BOOL MainApp::IsActive(void)
 {
 	return bIsActive;
 }
@@ -138,15 +138,17 @@ void MainApp::BuildTestEntity(const SEntityDescriptor& desc, const DirectX::XMMA
 
 	testEntity.AddComponent(testTransform);
 	testEntity.AddComponent(testMeshComponent);
+	
+	testTransform->SetTransform(transform);
+
 	if (desc.physicsDesc.ShapeType != ECShapeType::NotImplemented)
 	{
 		CPhysicsComponent* testPhysics = new CPhysicsComponent();
 		testPhysics->InitializeComponent(NvidiaPhysics.get());
 		testPhysics->SetDescription(desc.physicsDesc);
-		
+
 		testEntity.AddComponent(testPhysics);
 	}
-	testTransform->OnTransformComponentUpdate.Notify(transform);
 	TestEntites.emplace_back(make_unique<CEntityComponent>(testEntity));
 }
 
@@ -159,11 +161,11 @@ void MainApp::BuildTestEntities()
 	boxEntity.meshDesc.SubstanceCBIndex = 1;
 	boxEntity.physicsDesc.ShapeType = ECShapeType::Box;
 	boxEntity.physicsDesc.ActorType = ECActorType::Dynamic;
-	BuildTestEntity(boxEntity, DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f) * DirectX::XMMatrixTranslation(15, 10, 0));
+	BuildTestEntity(boxEntity, DirectX::XMMatrixTranslation(0, 20, 0));
 	
 	SEntityDescriptor TerrainDesc;
 	TerrainDesc.meshDesc.Name = "Terrain";
-	TerrainDesc.meshDesc.Layer = static_cast<uint8_t>(RenderLayer::Opaque); 
+	TerrainDesc.meshDesc.Layer = static_cast<uint8_t>(RenderLayer::OpaquePhysics);
 	TerrainDesc.meshDesc.SubstanceCBIndex = 2;
 	TerrainDesc.physicsDesc.ShapeType = ECShapeType::TriangleMesh;
 	TerrainDesc.physicsDesc.ActorType = ECActorType::Static;
@@ -192,7 +194,7 @@ void MainApp::BuildLandscapeGeometry(void)
 void MainApp::BuildPrimitiveBox()
 {
 	GeometryGenerator geoGenerator;
-	MeshData box = geoGenerator.CreateBox(1.0f, 1.0f, 1.0f, 3);
+	MeshData box = geoGenerator.CreateBox(1.f, 1.f, 1.f, 3);
 	int verticesCount = static_cast<int>(box.VerticesList.size());
 	std::vector<Vertex> vertices(verticesCount);
 	for (size_t i = 0; i < verticesCount; ++i)
@@ -200,7 +202,7 @@ void MainApp::BuildPrimitiveBox()
 		DirectX::XMVECTOR& position = box.VerticesList[i].Position;
 		DirectX::XMStoreFloat3(&vertices[i].Position, box.VerticesList[i].Position);
 		DirectX::XMStoreFloat3(&vertices[i].Normal, box.VerticesList[i].Normal);
-		
+		vertices[i].TextureCoord = box.VerticesList[i].TextureCoord;
 	}
 	box.Name = "Box";
 	RenderDevice->BuildMeshBuffer(box);
@@ -344,7 +346,7 @@ void MainApp::TranslateMessages()
 			continue;
 		}
 
-		if (!GetbIsActive())
+		if (IsActive())
 		{
 
 			while (!m_Mouse.IsEmptyRawEventBuffer())
@@ -614,12 +616,12 @@ LRESULT  MainApp::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		//mIsActive = (BOOL)wParam;
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
-			bIsActive = true;
+			bIsActive = false;
 			//m_Timer.Stop();
 		}
 		else
 		{
-			bIsActive = false;
+			bIsActive = true;
 			//m_Timer.Start();
 		}
 	}

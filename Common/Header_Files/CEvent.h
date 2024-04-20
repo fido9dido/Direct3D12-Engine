@@ -23,19 +23,10 @@ public:
 
 	void Register(CObserver callback)
 	{
-		Observers.emplace_back(std::move(callback));
+		Observers.emplace_back(callback);
 	}
 
-	void Notify(const Args&... args) const
-	{
-		for (const CObserver& callback : Observers)
-		{
-			callback(args...);
-		}
-
-	}
-
-	std::vector<Return> Notify(const Args&... args) const
+	std::vector<Return> Notify(const Args&... args)
 	{
 		std::vector<Return> result;
 		for (const CObserver& callback : Observers)
@@ -67,7 +58,6 @@ public:
 		{
 			callback(args...);
 		}
-
 	}
 };
 #endif

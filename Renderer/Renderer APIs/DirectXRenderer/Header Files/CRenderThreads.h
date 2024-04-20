@@ -14,13 +14,13 @@ class CRenderThreads
 private:
 
 	CThreads Threads;
-	std::atomic_bool& bDone;
+	bool& bDone;
 	// Handles to put threads to wake/sleep threads
 	std::vector<HANDLE> WorkerBegin;
 	std::vector<HANDLE> WorkerFinished;
 
 public:
-	CRenderThreads(std::atomic_bool& ref):bDone(ref) { }
+	CRenderThreads(bool& const ref):bDone(ref) { }
 	~CRenderThreads()
 	{ 
 		bDone = true;

@@ -58,6 +58,8 @@ struct MaterialData
 	DirectX::XMFLOAT4 diffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMFLOAT3 fresnelR0  = { 0.01f, 0.01f, 0.01f };
 	float roughness;// = 0.25f;
+
+	DirectX::XMFLOAT4X4 MaterialTransform = MathHelper::Identity4x4();
 };
 
 struct Material
@@ -86,15 +88,15 @@ struct Material
 	// frensel effect R THETA
 	DirectX::XMVECTOR FresnelR0 = { 0.01f, 0.01f, 0.01f,0 };
 
-	//0 is smooth 1 is heightest roughness
+	//0 is smooth 1 is highest roughness
 	float Roughness = .25f;
+	float Power = 0.f; 
 	
-	float power;
-	float roughness;
-
 	DirectX::XMVECTOR ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMVECTOR specular = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMVECTOR emissive = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	DirectX::XMFLOAT4X4 MaterialTransform = MathHelper::Identity4x4();
 };
 
 #endif

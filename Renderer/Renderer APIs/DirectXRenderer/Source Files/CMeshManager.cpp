@@ -30,9 +30,11 @@ void CMeshManager::CreateMeshBuffer(const MeshData& meshData)
 
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
-		auto& p = verticesList[i].Position;
+		const DirectX::XMVECTOR& p = verticesList[i].Position;
 		DirectX::XMStoreFloat3(&vertices[i].Position, p);
 		DirectX::XMStoreFloat3(&vertices[i].Normal, DirectX::XMVector3Normalize(verticesList[i].Normal));
+		vertices[i].TextureCoord = verticesList[i].TextureCoord;
+
 	}
 
 	const std::vector<uint32_t>& indices32List = meshData.Indices32List;

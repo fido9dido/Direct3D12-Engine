@@ -36,6 +36,7 @@ struct MaterialData
 	float4 diffuseAlbedo;
 	float3 fresnelR0;
 	float roughness;
+    float4x4 gMatTransform;
 };
 
 Texture2D gDiffuseMap[]: register(t0);
@@ -110,7 +111,8 @@ VertexOut mainVS(VertexIn vin)
 
 	// Output vertex attributes for interpolation across triangle.
 	float4 texC = mul(float4(vin.texCoord, 0.0f, 1.0f), gTexTransform);
-	vout.texCoord = mul(texC, substanceData.subTransform).xy;
+	//vout.texCoord = mul(texC, substanceData.subTransform).xy;
+    vout.texCoord = vin.texCoord;
 	return vout;
 }
 
@@ -118,11 +120,11 @@ float4 PS(VertexOut pin) : SV_Target
 {
 	
 	// Interpolating normal can unnormalize it, so renormalize it.
-	pin.normalW = normalize(pin.normalW);
+	pin.normalL = normalize(pin.normalL);
 	SubstanceData substanceData = gSubstanceData[gSubstanceIndex];
 	MaterialData materialData = gMaterialData[substanceData.hMaterial];
    
-	float3 blend_weights = abs(pin.normalW.xyz);
+	float3 blend_weights = abs(pin.normalL.xyz);
 	blend_weights = (blend_weights - 0.2) * 7;
 	blend_weights = max(blend_weights, 0);
 	blend_weights = blend_weights / (blend_weights.x + blend_weights.y + blend_weights.z).xxx;

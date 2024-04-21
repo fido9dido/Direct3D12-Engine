@@ -61,7 +61,7 @@ void CCamera::InitOrthogonalCamera(
 	Width = backBufferWidth;
 	Height = backBufferHeight;
 
-	SetMode(RENGINEMODE::Mode_Orthogonal, 1);;
+	SetMode(RENGINEMODE::Mode_Orthogonal, 0);;
 	SetClippingPlanes(0.1f, 2495.f);
 
 	D3D12_VIEWPORT viewPortView = { 0, 0, Width, Height };
@@ -77,23 +77,23 @@ void CCamera::InitOrthogonalCamera(
 	if (n == 1) // XY plane: front
 	{
 		UpVector = DirectX::XMVectorSet(0, 1, 0, 0);
-		Position = DirectX::XMVectorSet(0, 0, 1, 0);
+		DirectionVector = DirectX::XMVectorSet(0, 0, 1, 0);
 		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalPosition.Y, -OrthogonalDistance, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 2)// ZY plane: side
 	{
 		UpVector = DirectX::XMVectorSet(0, 1, 0, 0);
-		Position = DirectX::XMVectorSet(-1, 0, 0, 0);
+		DirectionVector = DirectX::XMVectorSet(-1, 0, 0, 0);
 		cameraPosition = DirectX::XMVectorSet(OrthogonalDistance, OrthogonalPosition.Y, OrthogonalPosition.Z, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 3) // XZ plane: top
 	{
 		UpVector = DirectX::XMVectorSet(0, 0, 1, 0);
-		Position = DirectX::XMVectorSet(0, -1, 0, 0);
+		DirectionVector = DirectX::XMVectorSet(0, -1, 0, 0);
 		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalDistance, OrthogonalPosition.Z, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else {
 		throw 0;
@@ -120,17 +120,17 @@ void CCamera::UpdateOrthogonalCamera(int n)
 	if (n == 1)
 	{ // XY plane: ront
 		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalPosition.Y, -0, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 2)// ZY plane: side
 	{
 		cameraPosition = DirectX::XMVectorSet(0, OrthogonalPosition.Y, OrthogonalPosition.Z, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 3) // XZ plane: top
 	{
 		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, 0, OrthogonalPosition.Z, 0); //vcR, U, D, P
-		View3D = DirectX::XMMatrixLookToLH(cameraPosition, Position, UpVector);
+		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else
 	{
@@ -287,7 +287,7 @@ void CCamera::SetMode(RENGINEMODE mode, int stageNum)
 /*
  * Calculate perspective and orthogonal projection matrix or given
  * stage using given values. This will not activate any settings.
- * -> IN: float       - ield of view (horizontal) radian
+ * -> IN: float       - field of view (horizontal) radian
  *        ZFXVIEWPORT - viewport dimensions or NULL or screen dimensions
  *        int         - which stage to set (4 possible)
  *

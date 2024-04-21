@@ -170,6 +170,14 @@ void MainApp::BuildTestEntities()
 	TerrainDesc.physicsDesc.ShapeType = ECShapeType::TriangleMesh;
 	TerrainDesc.physicsDesc.ActorType = ECActorType::Static;
 	BuildTestEntity(TerrainDesc, DirectX::XMMatrixTranslation(0, 7, 0));
+
+	SEntityDescriptor TerrainDescWireFrame;
+	TerrainDescWireFrame.meshDesc.Name = "Terrain";
+	TerrainDescWireFrame.meshDesc.Layer = static_cast<uint8_t>(RenderLayer::WireframeTri);
+	TerrainDescWireFrame.meshDesc.SubstanceCBIndex = 2;
+	TerrainDescWireFrame.physicsDesc.ShapeType = ECShapeType::NotImplemented;
+	TerrainDescWireFrame.physicsDesc.ActorType = ECActorType::Static;
+	BuildTestEntity(TerrainDescWireFrame, DirectX::XMMatrixTranslation(0, 7, 0));
 	
 }
 

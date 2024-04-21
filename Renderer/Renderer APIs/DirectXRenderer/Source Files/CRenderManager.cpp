@@ -550,11 +550,13 @@ HRESULT CRenderManager::CreatePipelineStateObject()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC wireframePsoDesc = opaqueline;
 	wireframePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 	wireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	wireframePsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_NONE;
 	ThrowIfFailed(Device->CreateGraphicsPipelineState(&wireframePsoDesc, _uuidof(ID3D12PipelineState), &PipelineStateMap["wireframeLine"]));
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC wireframeTriPsoDesc = psoDesc;
 	wireframeTriPsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	wireframeTriPsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	wireframeTriPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_NONE;
 	ThrowIfFailed(Device->CreateGraphicsPipelineState(&wireframeTriPsoDesc, _uuidof(ID3D12PipelineState), &PipelineStateMap["wireframeTri"]));
 	
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPsoDesc = psoDesc;

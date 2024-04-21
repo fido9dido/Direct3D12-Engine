@@ -55,8 +55,8 @@ void CCamera::InitOrthogonalCamera(
 )
 {
 	Scale = scale;
-	OrthogonalDistance = 1;
-	OrthogonalPosition = { 0,-2,0 };
+	OrthogonalDistance = 10;
+	OrthogonalPosition = { 0, -2 ,0 };
 	DirectX::XMVECTOR cameraPosition;
 	Width = backBufferWidth;
 	Height = backBufferHeight;
@@ -119,17 +119,17 @@ void CCamera::UpdateOrthogonalCamera(int n)
 
 	if (n == 1)
 	{ // XY plane: ront
-		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalPosition.Y, -0, 0); //vcR, U, D, P
+		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalPosition.Y, -OrthogonalDistance, 0); //vcR, U, D, P
 		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 2)// ZY plane: side
 	{
-		cameraPosition = DirectX::XMVectorSet(0, OrthogonalPosition.Y, OrthogonalPosition.Z, 0); //vcR, U, D, P
+		cameraPosition = DirectX::XMVectorSet(OrthogonalDistance, OrthogonalPosition.Y, OrthogonalPosition.Z, 0); //vcR, U, D, P
 		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else if (n == 3) // XZ plane: top
 	{
-		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, 0, OrthogonalPosition.Z, 0); //vcR, U, D, P
+		cameraPosition = DirectX::XMVectorSet(OrthogonalPosition.X, OrthogonalDistance, OrthogonalPosition.Z, 0); //vcR, U, D, P
 		View3D = DirectX::XMMatrixLookToLH(cameraPosition, DirectionVector, UpVector);
 	}
 	else
